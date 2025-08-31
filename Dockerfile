@@ -15,4 +15,6 @@ COPY . .
 EXPOSE 10000
 
 # アプリの起動コマンド（app.py 内に Flask の app がある場合）
-CMD ["gunicorn", "-b", "0.0.0.0:10000", "app2:app"]
+CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:10000", "app:app"]
+
+
