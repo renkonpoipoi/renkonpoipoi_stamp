@@ -1,6 +1,11 @@
 Flask==3.0.0
 gunicorn==21.2.0
 Pillow==10.3.0
-rembg==2.0.50
 apng==0.3.4
+
+rembg==2.0.69
+numba>=0.59
+llvmlite>=0.42
+numpy<2
+
 
