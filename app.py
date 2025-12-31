@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, make_response, send_file
-from rembg import remove
+from rembg import remove, new_session
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance
 from apng import APNG
 from io import BytesIO
@@ -7,7 +7,15 @@ import os
 import math
 import io
 from werkzeug.utils import secure_filename
-from flask import jsonify, url_for
+
+REMBG_MODEL = os.getenv("REMBG_MODEL", "silueta")  # 軽量モデル
+_session = None
+
+def remove_bg(input_bytes: bytes) -> bytes:
+    global _session
+    if _session is None:
+        _session = new_session(REMBG_MODEL)
+    return remove(input_bytes, session=_session)
 
 app = Flask(__name__)
 UPLOAD_FOLDER = os.path.join(os.getcwd(), "static", "safe_uploads")
@@ -133,7 +141,7 @@ def create_animation():
     safe_name = secure_filename(file.filename or "upload")
     basename, ext = os.path.splitext(safe_name)
     input_data = file.read()
-    output_data = remove(input_data)
+    output_data = remove_bg(input_data)
     img = Image.open(io.BytesIO(output_data)).convert("RGBA")
 
     buf = io.BytesIO()
@@ -298,5 +306,6 @@ def create_animation():
     resp.headers["Cache-Control"] = "no-store"
     return resp         
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
+
 
