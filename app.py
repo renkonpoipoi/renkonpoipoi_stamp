@@ -131,7 +131,7 @@ def create_animation():
     base_font_size = 24
 
     safe_name = secure_filename(file.filename or "upload")
-    _, ext = os.path.splitext(safe_name)
+    basename, ext = os.path.splitext(safe_name)
     input_data = file.read()
     output_data = remove(input_data)
     img = Image.open(io.BytesIO(output_data)).convert("RGBA")
@@ -299,3 +299,4 @@ def create_animation():
     return resp         
 if __name__ == "__main__":
     app.run(debug=True)
+
